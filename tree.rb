@@ -1,27 +1,37 @@
 require_relative("node.rb")
 class Tree
   attr_reader :root
-  def initialize
-    @root = nil
+  def initialize(array = [])
+    array = array.uniq.sort() unless array.empty?
+    @root = build_tree(array)
   end
 
   def build_tree(array)
-    node = Node.new()
-    until array.length() <=1
-      node.data = array.shift if node.data == nil
-      node.left = array.shift if array[0] < node.data
-      node.right = array.shift if array[0] > node.data
-      node.data = node.left if array[0] < node.data
-      node.data = node.right if array[0] > node.data
-      p node.data
-    end
-
+    return nil if array.empty? 
+    mid = (array.length-1)/2
+    root = Node.new(array[mid])
+    root.right = build_tree(array[mid+1..-1])
+    root.left = build_tree(array[0...mid])
+    root
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
+    #debugger
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
+  end
+
+  def insert(elem, node = @root)
+    return Node.new(elem) if node.nil?
+    return node if node.data == elem
+
+    if elem < node.data
+      node.left = insert(elem, node.left)
+    elsif elem > node.data
+      node.right = insert(elem, node.right)
+    end
+    return node
   end
     
 end
