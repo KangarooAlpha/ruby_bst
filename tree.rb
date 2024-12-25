@@ -33,5 +33,22 @@ class Tree
     end
     return node
   end
+
+  def delete(elem, node = @root)
+    return node if node.nil?
+    if elem < node.data
+      node.left = delete(elem, node.left)
+    elsif elem > node.data
+      node.right = delete(elem, node.right)
+    else
+      if node.right.nil?
+        return node.left
+      elsif node.left.nil?
+        return node.right
+      end
+      
+    end
+    node
+  end
     
 end
